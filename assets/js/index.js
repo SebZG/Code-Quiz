@@ -17,6 +17,9 @@ const initials = document.getElementById("initials");
 const submit = document.getElementById("submit");
 // Feedback
 const feedback = document.getElementById("feedback");
+// Audio
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
 
 
 // Generate 10 random questions from questions list
@@ -59,13 +62,14 @@ const resetQuiz = () => {
   timeLeft = TIME_LEFT;
 }
 
+const handleCorrectAnswer = () => {
+  feedback.textContent = "Correct!";
+  correctSound.play();
+}
 const handleWrongAnswer = () => {
   timeLeft -= TIME_PENALTY;
   feedback.textContent = "Wrong!";
-}
-
-const handleCorrectAnswer = () => {
-  feedback.textContent = "Correct!";
+  wrongSound.play();
 }
 
 const startTimer = () => {

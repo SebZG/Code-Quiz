@@ -15,6 +15,7 @@ A Quiz appllication with a timer that stores your scores in local storage.
 - Quiz ends if time reaches 0 or 10 questions are answered.
 - At end of Quiz you may add initials and click "submit" to store scores in local storage.
 - Scores may be cleared/reset at anytime on highscores page.
+- Audio feedback is given depending on wrong or right answers.
 
 ##
 
