@@ -40,8 +40,9 @@ let correctAnswer = "";
 
 // Constants
 const TIME_LEFT = 75;
-const TIME_INTERVAL = 1000;
 const TIME_PENALTY = 10;
+const TIME_INTERVAL = 1000;
+const TIME_OUT = 2000;
 
 // Quiz logic
 
@@ -133,7 +134,7 @@ const selectAnswer = (e) => {
   setTimeout(() => {
     feedback.classList.add("hide");
     feedback.textContent = "";
-  }, 2000);
+  }, TIME_OUT);
 
   currentQuestionIndex++;
 
