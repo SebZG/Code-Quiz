@@ -23,11 +23,18 @@ const wrongSound = document.getElementById("wrongSound");
 
 
 // Generate 10 random questions from questions list
-const getRandomIndex = (arr) =>
-  arr[Math.floor(Math.random() * arr.length)];
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 
-const getRandomQuestions = (length, questions) =>
-  Array.from({ length }, () => getRandomIndex(questions));
+const getRandomQuestions = (length, questions) => {
+  const shuffledQuestions = shuffleArray([...questions]);
+  return shuffledQuestions.slice(0, length);
+};
 
 const randomQuestions = getRandomQuestions(10, questions);
 
@@ -96,6 +103,8 @@ const showQuestions = () => {
   questionsContainer.classList.remove("hide");
 
   clearChoiceContainer();
+
+  console.log(randomQuestions)
 
   currentQuestion = randomQuestions[currentQuestionIndex];
   correctAnswer = currentQuestion.correctAnswer;
