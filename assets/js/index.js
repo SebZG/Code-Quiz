@@ -146,3 +146,23 @@ const selectAnswer = (e) => {
 }
 
 start.addEventListener("click", startQuiz);
+
+// Submit scores
+
+submit.onclick = () => {
+  const storedScores = localStorage.getItem("scores");
+  const scores = storedScores ? JSON.parse(storedScores) : [];
+
+  const playerInitials = initials.value;
+
+  const playerData = {
+    initials: playerInitials,
+    score: score,
+  };
+
+  scores.push(playerData);
+
+  localStorage.setItem("scores", JSON.stringify(scores));
+
+  window.location.href = "highscores.html";
+};
