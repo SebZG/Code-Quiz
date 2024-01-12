@@ -1,5 +1,6 @@
 import { questions } from "./questions.js";
 
+// ELEMENTS
 // Timer
 const time = document.getElementById("time");
 // Start screen
@@ -12,7 +13,7 @@ const choices = document.getElementById("choices");
 // End screen
 const endScreen = document.getElementById("end-screen");
 const finalScore = document.getElementById("final-score");
-const intials = document.getElementById("initials");
+const initials = document.getElementById("initials");
 const submit = document.getElementById("submit");
 // Feedback
 const feedback = document.getElementById("feedback");
@@ -27,61 +28,121 @@ const getRandomQuestions = (length, questions) =>
 
 const randomQuestions = getRandomQuestions(10, questions);
 
+// Timer
+let timeLeft = 0;
+
 // Trackers
 let score = 0;
-let timeLeft = 0;
 let currentQuestionIndex = 0;
-let currentQuestion = randomQuestions[currentQuestionIndex];
-let questionNum = currentQuestionIndex + 1;
-let correctAnswer = currentQuestion.correctAnswer;
+let currentQuestion = {};
+let questionNum = 0;
+let correctAnswer = "";
+
+// Constants
+const TIME_LEFT = 75;
+const TIME_INTERVAL = 1000;
+const TIME_PENALTY = 10;
 
 // Quiz logic
-start.addEventListener("click", () => startQuiz());
 
 const startQuiz = () => {
-  currentQuestionIndex = 0;
-  score = 0;
-  timeLeft = 75;
+  resetQuiz();
   time.textContent = timeLeft;
   showQuestions();
+  startTimer();
+}
+
+const resetQuiz = () => {
+  currentQuestionIndex = 0;
+  score = 0;
+  timeLeft = TIME_LEFT;
+}
+
+const handleWrongAnswer = () => {
+  timeLeft -= TIME_PENALTY;
+  feedback.textContent = "Wrong!";
+}
+
+const handleCorrectAnswer = () => {
+  feedback.textContent = "Correct!";
+}
+
+const startTimer = () => {
+  const timeInterval = setInterval(() => {
+    timeLeft--;
+
+    if (timeLeft >= 0) {
+      time.textContent = timeLeft;
+    }
+
+    if (timeLeft <= 0 || currentQuestionIndex === randomQuestions.length) {
+      clearInterval(timeInterval);
+      score = timeLeft < 0 ? 0 : timeLeft;
+      time.textContent = timeLeft < 0 ? 0 : timeLeft;
+      finalScore.textContent = score;
+      questionsContainer.classList.add("hide");
+      endScreen.classList.remove("hide");
+    }
+  }, TIME_INTERVAL);
 }
 
 const showQuestions = () => {
   startScreen.classList.add("hide");
   questionsContainer.classList.remove("hide");
 
+  clearChoiceContainer();
+
+  currentQuestion = randomQuestions[currentQuestionIndex];
+  correctAnswer = currentQuestion.correctAnswer;
+
+  questionNum = currentQuestionIndex + 1;
   questionTitle.textContent = `${questionNum}. ${currentQuestion.question}`;
 
   currentQuestion.answers.forEach(answer => {
-    const button = document.createElement("button");
-    button.textContent = answer.join(". ");
+    const button = createChoiceButton(answer);
     choices.appendChild(button);
-
-    if (answer[0] === correctAnswer) {
-      button.dataset.correct = correctAnswer;
-    }
-    button.addEventListener("click", selectAnswer);
   });
+}
+
+const createChoiceButton = (answer) => {
+  const button = document.createElement("button");
+  button.textContent = answer.join(". ");
+  if (answer[0] === correctAnswer) {
+    button.dataset.correct = correctAnswer;
+  }
+  button.addEventListener("click", selectAnswer);
+  return button;
+}
+
+const clearChoiceContainer = () => {
+  choices.innerHTML = ""
 }
 
 const selectAnswer = (e) => {
   const selectedAnswer = e.target;
   const isCorrect = selectedAnswer.dataset.correct === correctAnswer;
-  let feedbackTimer = 2;
+
+  feedback.classList.remove("hide");
 
   if (isCorrect) {
-    feedback.textContent = "Correct!";
-    feedback.classList.remove("hide");
+    handleCorrectAnswer();
   } else {
-    feedback.textContent = "Wrong!";
-    feedback.classList.remove("hide");
+    handleWrongAnswer();
   }
 
-  const feedbackInterval = setInterval(() => {
-    feedbackTimer--;
-    if (feedbackTimer === 0) {
-      feedback.classList.add("hide");
-      clearInterval(feedbackInterval);
-    }
-  }, 1000);
+  setTimeout(() => {
+    feedback.classList.add("hide");
+    feedback.textContent = "";
+  }, 2000);
+
+  currentQuestionIndex++;
+
+  if (currentQuestionIndex === randomQuestions.length) {
+    questionsContainer.classList.add("hide");
+    endScreen.classList.remove("hide");
+  } else {
+    showQuestions();
+  }
 }
+
+start.addEventListener("click", startQuiz);
