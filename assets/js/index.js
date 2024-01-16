@@ -18,8 +18,8 @@ const submit = document.getElementById("submit");
 // Feedback
 const feedback = document.getElementById("feedback");
 // Audio
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
+const correctSound = new Audio("./assets/sfx/correct.wav")
+const wrongSound = new Audio("./assets/sfx/incorrect.wav")
 
 
 // Generate 10 random questions from questions list
